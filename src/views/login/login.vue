@@ -103,6 +103,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { checkAgree } from "@/utils/validator.js";
 export default {
   name: "login",
@@ -155,13 +156,24 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // 登录接口
-          //   login(this.logForm).then(res => {
-          //     // console.log(res);
-          //     // 保存token
-          //     setToken(res.data.data.token);
-          //     // 跳转到首页
-          //     this.$router.push("/index");
-          //   });
+            axios({
+                url:'http://127.0.0.1/heimamm/public/login',
+                method:'post',
+                data:this.logForm,
+                withCredentials:true
+            }).then(res=>{
+                console.log(res);
+                if(res.data.code == 200){
+                    // 提示信息
+                    this.$message.success("登录成功");
+                    // 保存token
+                    window.localStorage.setItem("token",res.data.data.token);
+                    // 跳转到首页
+                    this.$router.push("/index");
+                }else {
+                    this.$message.warning(res.data.message);
+                }
+            })
         } else {
           this.$message.warning("请检查输入的内容");
           return false;
