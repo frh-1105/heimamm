@@ -172,7 +172,10 @@ export default {
       }
       return isJPG && isLt2M;
     }
-  }
+  },
+  created() {
+      
+  },
 };
 </script>
 
