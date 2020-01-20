@@ -33,7 +33,7 @@
               <img
                 class="captcha"
                 ref="captcha"
-                src="http://127.0.0.1/heimamm/public/captcha?type=login"
+                :src="actions"
                 @click="getRandomCode"
                 alt
               />
@@ -103,8 +103,9 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { checkAgree } from "@/utils/validator.js";
+// import axios from 'axios'
+import {login} from '@/api/login.js'
+import { checkAgree } from "@/utils/validator.js"
 export default {
   name: "login",
   data() {
@@ -143,25 +144,21 @@ export default {
           { min: 4, max: 4, message: "短信验证码长度为4" }
         ],
         checked: [{ validator: checkAgree }]
-      }
+      },
+      actions:process.env.VUE_APP_BASE_URL+"/captcha?type=login"
     };
   },
   methods: {
     //   刷新验证码
     getRandomCode() {
       this.$refs.captcha.src =
-        "http://127.0.0.1/heimamm/public/captcha?type=login&" + Date.now();
+        process.env.VUE_APP_BASE_URL+"/captcha?type=login&" + Date.now();
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // 登录接口
-            axios({
-                url:'http://127.0.0.1/heimamm/public/login',
-                method:'post',
-                data:this.logForm,
-                withCredentials:true
-            }).then(res=>{
+            login(this.logForm).then(res=>{
                 console.log(res);
                 if(res.data.code == 200){
                     // 提示信息
@@ -196,7 +193,9 @@ export default {
       return isJPG && isLt2M;
     }
   },
-  created() {}
+  created() {
+      console.log(process.env.VUE_APP_BASE_URL);
+  }
 };
 </script>
 
