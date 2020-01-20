@@ -30,7 +30,13 @@
               <el-input placeholder="请输入验证码" prefix-icon="el-icon-key" v-model="logForm.code"></el-input>
             </el-col>
             <el-col :span="7">
-              <img class="captcha" src alt />
+              <img
+                class="captcha"
+                ref="captcha"
+                src="http://127.0.0.1/heimamm/public/captcha?type=login"
+                @click="getRandomCode"
+                alt
+              />
             </el-col>
           </el-row>
         </el-form-item>
@@ -140,17 +146,22 @@ export default {
     };
   },
   methods: {
+    //   刷新验证码
+    getRandomCode() {
+      this.$refs.captcha.src =
+        "http://127.0.0.1/heimamm/public/captcha?type=login&" + Date.now();
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // 登录接口
-        //   login(this.logForm).then(res => {
-        //     // console.log(res);
-        //     // 保存token
-        //     setToken(res.data.data.token);
-        //     // 跳转到首页
-        //     this.$router.push("/index");
-        //   });
+          //   login(this.logForm).then(res => {
+          //     // console.log(res);
+          //     // 保存token
+          //     setToken(res.data.data.token);
+          //     // 跳转到首页
+          //     this.$router.push("/index");
+          //   });
         } else {
           this.$message.warning("请检查输入的内容");
           return false;
@@ -173,9 +184,7 @@ export default {
       return isJPG && isLt2M;
     }
   },
-  created() {
-      
-  },
+  created() {}
 };
 </script>
 
@@ -219,6 +228,9 @@ export default {
     }
     .login-form {
       margin-top: 29px;
+      .captcha {
+        width: 100%;
+      }
     }
     .btn-box {
       .el-button {
